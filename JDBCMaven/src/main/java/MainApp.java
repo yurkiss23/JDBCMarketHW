@@ -6,6 +6,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Scanner;
 
+import entities.Employee;
+
 public class MainApp {
 
 	public static void main(String[] args) {
@@ -30,17 +32,18 @@ public class MainApp {
 					break;
 
 				case 2:
+					Employee employee = new Employee();
 					System.out.println("введіть ім'я");
-					String firstname = in.next();
+					employee.setFirstname(in.next());
 					System.out.println("введіть прізвище");
-					String lastname = in.next();
+					employee.setLastname(in.next());
 					System.out.println("введіть дату народження");
-					String birthdate = in.next();
+					employee.setBirthdate(in.next());
 					System.out.println("введіть зарплату");
-					String salary = in.next();
+					employee.setSalary(in.next());
 					System.out.println("введіть відділ");
-					String section = in.next();
-					InsertEmployee(conn, firstname, lastname, birthdate, salary, section);
+					employee.setSection(in.next());
+					InsertEmployee(conn, employee);
 					break;
 
 				case 3:
@@ -72,28 +75,16 @@ public class MainApp {
 				password);
 		return conn;
 	}
-
-	private static void GetVersionPostgres(Connection conn) throws SQLException {
-		Statement st = conn.createStatement();
-		ResultSet rs = st.executeQuery("SELECT VERSION()");
-
-		if (rs.next()) {
-			System.out.println(rs.getString(1));
-		}
-
-	}
-
-	private static void InsertEmployee(Connection conn, String firstname, String lastname,
-			String birthdate, String salary, String section)
-			throws SQLException {
+	
+	private static void InsertEmployee(Connection conn, Employee employee) throws SQLException {
 		String query = "INSERT INTO tbl_employees(firstname, lastname, birthdate, salary, section) VALUES (?,?,?,?,?)";
 		PreparedStatement pst = conn.prepareStatement(query);
 //		Date date = new Date();
-		pst.setString(1, firstname);
-		pst.setString(2, lastname);
-		pst.setString(3, birthdate);
-		pst.setDouble(4, Double.parseDouble(salary));
-		pst.setString(5, section);
+		pst.setString(1, employee.getFirstname());
+		pst.setString(2, employee.getLastname());
+		pst.setString(3, employee.getBirthdate());
+		pst.setDouble(4, Double.parseDouble(employee.getSalary()));
+		pst.setString(5, employee.getSection());
 		pst.executeUpdate();
 	}
 
